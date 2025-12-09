@@ -35,5 +35,21 @@ Where each gate multiplies the previous result by x:
 - C₅: x⁴ * x = x⁵ = y
 */
 
+// Veronica(Verifier) doing the setup
+
+function getGatesPolynomial(){
+    // For now, hardcoding
+    return [24,-50,35,-10,1];
+}
+
+function evaluatePolynomial(poly, x){
+    let result = 0;
+    for(let i = 0; i < poly.length; i++){
+        result += poly[i] * Math.pow(x, i);
+    }
+    return result;
+}
 //Input Value
 let C1 = 100;
+
+
