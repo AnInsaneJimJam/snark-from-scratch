@@ -38,7 +38,7 @@ Where each gate multiplies the previous result by x:
 // Veronica(Verifier) doing the setup
 
 function getGatesPolynomial(){
-    // For now, hardcoding
+    // For now, hardcoding for y = x^3
     return [24,-50,35,-10,1];
 }
 
@@ -49,7 +49,42 @@ function evaluatePolynomial(poly, x){
     }
     return result;
 }
+
+// arrpoints = [[x,y]]
+function evaluateUsingLagrange(arrPoints, x){
+    let result = 0;
+    for (let i = 0; i < arrPoints.length; i++){
+        const [xi, yi] = arrPoints[i];
+        let numerator = 1;
+        let denominator = 1;
+        for(let k = 0; k < arrPoints.length; k++){
+            if(k !== i){
+                const [xk, yk] = arrPoints[k];
+                numerator = numerator * (x - xk);
+                denominator = denominator * (xi - xk);
+            }
+        }
+        result += (yi * numerator) / denominator;
+    }
+    return result;
+}
+
+//Hardcoded for now for y = x^3
+function getLpolynomials(){
+    return[[2,-1],[-1,1],[0,0]];
+}
+
+function getRpolynomials(){
+    return[[1,0],[0,0],[0,0]];
+}
+
+function getOpolynomials(){
+    return[[0,0],[2,-1],[-1,1]];
+}
+    
+
 //Input Value
 let C1 = 100;
 
+console.log(evaluateUsingLagrange([[1,1],[2,0]],3));
 
