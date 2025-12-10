@@ -44,11 +44,28 @@ const p = 2147483647;
 const g = 7;
 
 
-function getGatesPolynomial(){
-    // For now, hardcoding for y = x^3
-    return [24,-50,35,-10,1];
+/**
+ * Evaluates the target polynomial T(x) = (x-1)(x-2)...(x-n) at point x
+ * This polynomial vanishes at all gate indices (T(i) = 0 for i = 1,2,...,n)
+ * @param {number[][]} circuit - Circuit representation from getCircuitDetails
+ * @param {number} x - Point at which to evaluate the target polynomial
+ * @returns {number} The value of T(x)
+ */
+function evaluateGatesPolynomial(circuit,x){
+    result = 1;
+    for(let i =1; i<circuit.length + 1; i++){
+        result = result*(x-i)
+    }
+    return result
+    
 }
 
+/**
+ * Evaluates a polynomial at a given point x
+ * @param {number[]} poly - Coefficient array where poly[i] is coefficient of x^i 
+ * @param {number} x - Point at which to evaluate the polynomial
+ * @returns {number} The value of the polynomial at x
+ */
 function evaluatePolynomial(poly, x){
     let result = 0;
     for(let i = 0; i < poly.length; i++){
@@ -57,7 +74,13 @@ function evaluatePolynomial(poly, x){
     return result;
 }
 
-// arrpoints = [[x,y]]
+/**
+ * Performs Lagrange interpolation to evaluate a polynomial at point x
+ * Given points, constructs the unique polynomial passing through them and evaluates it
+ * @param {number[][]} arrPoints - Array of [x, y] coordinate pairs
+ * @param {number} x - Point at which to evaluate the interpolated polynomial
+ * @returns {number} The value of the interpolated polynomial at x
+ */
 function evaluateUsingLagrange(arrPoints, x){
     let result = 0;
     for (let i = 0; i < arrPoints.length; i++){
@@ -76,6 +99,11 @@ function evaluateUsingLagrange(arrPoints, x){
     return result;
 }
 
+/**
+ * Counts the number of '1' bits in a binary string
+ * @param {string} binaryString - Binary representation as a string (e.g., "101")
+ * @returns {number} Count of '1' characters in the string
+ */
 function count1(binaryString){
     let count = 0;
     for(let i = 0; i < binaryString.length; i++){
@@ -86,6 +114,11 @@ function count1(binaryString){
     return count;
 }
 
+/**
+ * Gets the positions of '1' bits in a binary string (counting from right, 1-indexed)
+ * @param {string} binaryString - Binary representation as a string
+ * @returns {number[]} Array of positions where '1' appears (rightmost position = 1)
+ */
 function get1(binaryString){
     let result = [];
     for(let i =0; i < binaryString.length; i++){
@@ -96,8 +129,12 @@ function get1(binaryString){
     return result;
 }
 
-// For now, y = x^k computation only
-// [[Gate no., Left input, Right input, Output]]
+/**
+ * Generates circuit details for computing y = x^k using binary decomposition
+ * Creates gates for efficient exponentiation (square-and-multiply algorithm)
+ * @param {number} k - The exponent for x^k computation
+ * @returns {number[][]} Array of gates, each gate: [gate_no, left_input, right_input, output]
+ */
 function getCircuitDetails(k){
     const binaryk = k.toString(2);
     const noOfGates = count1(binaryk) + binaryk.length - 2;
@@ -113,8 +150,14 @@ function getCircuitDetails(k){
    return circuit
 }
 
-// pos => left =1, right = 2, output =3 
-// i => Li
+/**
+ * Generates sub-polynomial points for a specific wire in the QAP
+ * Creates points (gate_index, coefficient) for Lagrange interpolation
+ * @param {number[][]} circuit - Circuit representation from getCircuitDetails
+ * @param {number} pos - Position in gate: 1=left input, 2=right input, 3=output
+ * @param {number} i - Wire index (Li, Ri, or Oi)
+ * @returns {number[][]} Array of [gate_number, coefficient] pairs for interpolation
+ */
 function getSubPolynomails(circuit,pos,i){
     result = [];
     for(let j = 0; j < circuit.length ; j++){
@@ -123,7 +166,12 @@ function getSubPolynomails(circuit,pos,i){
     return result
 }
 
-// Min,max needs to be integer
+/**
+ * Generates a random integer in the range [min, max] (inclusive)
+ * @param {number} min - Minimum value (must be integer)
+ * @param {number} max - Maximum value (must be integer)
+ * @returns {number} Random integer between min and max
+ */
 function getRandInt(min, max){
     return Math.floor(Math.random() * (max - min +1)) + min;
 }
@@ -144,3 +192,4 @@ alphaO = getRandInt(1,p-1);
 betaL = getRandInt(1,p-1);
 betaR = getRandInt(1,p-1);
 betaO = getRandInt(1,p-1);
+
