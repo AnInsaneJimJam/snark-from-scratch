@@ -137,4 +137,10 @@ let C1 = 100;
 //Veronica Generates random Values
 secret = getRandInt(1,p-1);
 
-
+//Knowledge of exponent values
+alphaL = getRandInt(1,p-1);
+alphaR = getRandInt(1,p-1);
+alphaO = getRandInt(1,p-1);
+betaL = getRandInt(1,p-1);
+betaR = getRandInt(1,p-1);
+betaO = getRandInt(1,p-1);
