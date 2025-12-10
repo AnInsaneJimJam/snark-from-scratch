@@ -107,18 +107,28 @@ function getCircuitDetails(k){
         if(i < binaryk.length){
             circuit.push([i,i,i,i+1]);
         }else{
-            console.log(i-binaryk.length)
             circuit.push([i,i,arr1[i-binaryk.length+1],i+1])
         }
     }
    return circuit
 }
 
+// pos => left =1, right = 2, output =3 
+// i => Li
+function getSubPolynomails(circuit,pos,i){
+    result = [];
+    for(let j = 0; j < circuit.length ; j++){
+        result.push([circuit[j][0],circuit[j][pos]==i ? 1:0])
+    }
+    return result
+}
+
 // Min,max needs to be integer
 function getRandInt(min, max){
     return Math.floor(Math.random() * (max - min +1)) + min;
 }
-    
+
+
 
 //Input Value
 let C1 = 100;
@@ -127,6 +137,4 @@ let C1 = 100;
 //Veronica Generates random Values
 secret = getRandInt(1,p-1);
 
-const num = 5
 
-console.log(getCircuitDetails(5));
