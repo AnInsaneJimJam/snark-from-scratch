@@ -37,6 +37,10 @@ Where each gate multiplies the previous result by x:
 
 // Veronica(Verifier) doing the setup
 
+// Taking a small p for just learning purposes
+const p = 2147483647;
+
+
 function getGatesPolynomial(){
     // For now, hardcoding for y = x^3
     return [24,-50,35,-10,1];
@@ -69,6 +73,11 @@ function evaluateUsingLagrange(arrPoints, x){
     return result;
 }
 
+// Min,max needs to be integer
+function getRandInt(min, max){
+    return Math.floor(Math.random() * (max - min +1)) + min;
+}
+/*
 //Hardcoded for now for y = x^3
 function getLpolynomials(){
     return[[2,-1],[-1,1],[0,0]];
@@ -81,10 +90,14 @@ function getRpolynomials(){
 function getOpolynomials(){
     return[[0,0],[2,-1],[-1,1]];
 }
+*/
     
 
 //Input Value
 let C1 = 100;
 
-console.log(evaluateUsingLagrange([[1,1],[2,0]],3));
+
+//Veronica Generates random Values
+secret = getRandInt(1,p-1);
+
 
