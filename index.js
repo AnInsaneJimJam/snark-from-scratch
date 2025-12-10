@@ -38,10 +38,14 @@ Where each gate multiplies the previous result by x:
 // Veronica(Verifier) doing the setup
 
 // Taking a small p for just learning purposes
-const p = 2147483647;
+const P = 2147483647;
 
 // Taking a small g for just learning purposes
-const g = 7;
+const G = 7;
+
+// Defining the circuit
+// Hardcoding ends here
+const CIRCUIT = 3;
 
 
 /**
@@ -52,7 +56,7 @@ const g = 7;
  * @returns {number} The value of T(x)
  */
 function evaluateGatesPolynomial(circuit,x){
-    result = 1;
+    let result = 1;
     for(let i =1; i<circuit.length + 1; i++){
         result = result*(x-i)
     }
@@ -159,17 +163,17 @@ function getCircuitDetails(k){
  */
 function expo(base, exponent){
     if(exponent === 0) return 1;
-    if(exponent === 1) return base % p;
+    if(exponent === 1) return base % P;
     
     let result = 1;
-    base = base % p;
+    base = base % P;
     
     while(exponent > 0){
         if(exponent % 2 === 1){
-            result = (result * base) % p;
+            result = (result * base) % P;
         }
         exponent = Math.floor(exponent / 2);
-        base = (base * base) % p;
+        base = (base * base) % P;
     }
     
     return result;
@@ -183,10 +187,19 @@ function expo(base, exponent){
  * @param {number} i - Wire index (Li, Ri, or Oi)
  * @returns {number[][]} Array of [gate_number, coefficient] pairs for interpolation
  */
-function getSubPolynomails(circuit,pos,i){
-    result = [];
+function getSubPolynomailPoints(circuit,pos,i){
+    let result = [];
     for(let j = 0; j < circuit.length ; j++){
         result.push([circuit[j][0],circuit[j][pos]==i ? 1:0])
+    }
+    return result
+}
+
+function evaluateSubPolynomials(circuit,pos,x){
+    let result = []
+    for(let i = 1; i <= circuit.length+1;i++){
+        let subpoly = getSubPolynomailPoints(circuit,pos,i);
+        result.push(evaluateUsingLagrange(subpoly,x));
     }
     return result
 }
@@ -201,18 +214,44 @@ function getRandInt(min, max){
     return Math.floor(Math.random() * (max - min +1)) + min;
 }
 
+////////////////////////////////////////SETUP////////////////////////////////////////////////////
 //Input Value
-let C1 = 100;
+let I = 100;
+
+//Calculate Output Value : Done by Philip (Prover)
+let O = I**CIRCUIT
 
 
 //Veronica Generates random Values
-secret = getRandInt(1,p-1);
+const secret = getRandInt(1,P-1);
 
 //Knowledge of exponent values
-alphaL = getRandInt(1,p-1);
-alphaR = getRandInt(1,p-1);
-alphaO = getRandInt(1,p-1);
-betaL = getRandInt(1,p-1);
-betaR = getRandInt(1,p-1);
-betaO = getRandInt(1,p-1);
+const alphaL = getRandInt(1,P-1);
+const alphaR = getRandInt(1,P-1);
+const alphaO = getRandInt(1,P-1);
+const betaL = getRandInt(1,P-1);
+const betaR = getRandInt(1,P-1);
+const betaO = getRandInt(1,P-1);
 
+const circuit = getCircuitDetails(CIRCUIT)
+
+//Calculate g^G(s)
+const encryptedG = expo(G,evaluateGatesPolynomial(circuit,secret));
+
+//Calculate L_i(s),R_i(s)_O_i(s)
+const Ls = evaluateSubPolynomials(circuit,1,secret);
+const Rs = evaluateSubPolynomials(circuit,2,secret);
+const Os = evaluateSubPolynomials(circuit,3,secret);
+
+// Have to handle negative values
+const encryptedLs = Ls.map((elem) => {
+  return expo(G,elem);
+});
+
+const encryptedRs = Rs.map((elem) => {
+  return expo(G,elem);
+});
+
+const encryptedOs = Os.map((elem) => {
+  return expo(G,elem);
+});
