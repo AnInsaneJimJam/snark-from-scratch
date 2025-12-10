@@ -40,6 +40,9 @@ Where each gate multiplies the previous result by x:
 // Taking a small p for just learning purposes
 const p = 2147483647;
 
+// Taking a small g for just learning purposes
+const g = 7;
+
 
 function getGatesPolynomial(){
     // For now, hardcoding for y = x^3
@@ -73,24 +76,48 @@ function evaluateUsingLagrange(arrPoints, x){
     return result;
 }
 
+function count1(binaryString){
+    let count = 0;
+    for(let i = 0; i < binaryString.length; i++){
+        if(binaryString[i] === '1'){
+            count++;
+        }
+    }
+    return count;
+}
+
+function get1(binaryString){
+    let result = [];
+    for(let i =0; i < binaryString.length; i++){
+        if(binaryString[i] === '1'){
+            result.push(binaryString.length-i);
+        }
+    }
+    return result;
+}
+
+// For now, y = x^k computation only
+// [[Gate no., Left input, Right input, Output]]
+function getCircuitDetails(k){
+    const binaryk = k.toString(2);
+    const noOfGates = count1(binaryk) + binaryk.length - 2;
+    const arr1 = get1(binaryk);
+    const circuit = [];
+    for(let i = 1; i <=noOfGates; i++){
+        if(i < binaryk.length){
+            circuit.push([i,i,i,i+1]);
+        }else{
+            console.log(i-binaryk.length)
+            circuit.push([i,i,arr1[i-binaryk.length+1],i+1])
+        }
+    }
+   return circuit
+}
+
 // Min,max needs to be integer
 function getRandInt(min, max){
     return Math.floor(Math.random() * (max - min +1)) + min;
 }
-/*
-//Hardcoded for now for y = x^3
-function getLpolynomials(){
-    return[[2,-1],[-1,1],[0,0]];
-}
-
-function getRpolynomials(){
-    return[[1,0],[0,0],[0,0]];
-}
-
-function getOpolynomials(){
-    return[[0,0],[2,-1],[-1,1]];
-}
-*/
     
 
 //Input Value
@@ -100,4 +127,6 @@ let C1 = 100;
 //Veronica Generates random Values
 secret = getRandInt(1,p-1);
 
+const num = 5
 
+console.log(getCircuitDetails(5));
