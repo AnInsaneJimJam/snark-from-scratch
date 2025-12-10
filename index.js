@@ -151,6 +151,31 @@ function getCircuitDetails(k){
 }
 
 /**
+ * Computes modular exponentiation: (base^exponent) mod p
+ * Uses fast exponentiation (square-and-multiply) for efficiency
+ * @param {number} base - Base value
+ * @param {number} exponent - Exponent value (non-negative integer)
+ * @returns {number} Result of (base^exponent) mod p
+ */
+function expo(base, exponent){
+    if(exponent === 0) return 1;
+    if(exponent === 1) return base % p;
+    
+    let result = 1;
+    base = base % p;
+    
+    while(exponent > 0){
+        if(exponent % 2 === 1){
+            result = (result * base) % p;
+        }
+        exponent = Math.floor(exponent / 2);
+        base = (base * base) % p;
+    }
+    
+    return result;
+}
+
+/**
  * Generates sub-polynomial points for a specific wire in the QAP
  * Creates points (gate_index, coefficient) for Lagrange interpolation
  * @param {number[][]} circuit - Circuit representation from getCircuitDetails
@@ -175,8 +200,6 @@ function getSubPolynomails(circuit,pos,i){
 function getRandInt(min, max){
     return Math.floor(Math.random() * (max - min +1)) + min;
 }
-
-
 
 //Input Value
 let C1 = 100;
