@@ -1,4 +1,4 @@
-import {count1,get1} from "./binary.js";
+import {count1,get1} from "./misc.js";
 
 /**
  * Generates circuit details for computing y = x^k using binary decomposition
