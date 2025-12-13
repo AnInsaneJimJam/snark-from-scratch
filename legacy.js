@@ -35,7 +35,7 @@ Where each gate multiplies the previous result by x:
 - C₅: x⁴ * x = x⁵ = y
 */
 
-import FiniteField from "../utils/finitefield.js";
+import FiniteField from "./utils/finitefield.js";
 
 // Veronica(Verifier) doing the setup
 
