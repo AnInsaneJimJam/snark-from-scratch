@@ -1,3 +1,5 @@
+import {count1,get1} from "./binary.js";
+
 /**
  * Generates circuit details for computing y = x^k using binary decomposition
  * Creates gates for efficient exponentiation (square-and-multiply algorithm)
@@ -17,4 +19,20 @@ export function getCircuitDetails(k){
         }
     }
    return circuit
+}
+
+/**
+ * Generates sub-polynomial points for a specific wire in the QAP
+ * Creates points (gate_index, coefficient) for Lagrange interpolation
+ * @param {number[][]} circuit - Circuit representation from getCircuitDetails
+ * @param {number} pos - Position in gate: 1=left input, 2=right input, 3=output
+ * @param {number} i - Wire index (Li, Ri, or Oi)
+ * @returns {number[][]} Array of [gate_number, coefficient] pairs for interpolation
+ */
+export function getSubPolynomailPoints(circuit,pos,i){
+    let result = [];
+    for(let j = 0; j < circuit.length ; j++){
+        result.push([circuit[j][0],circuit[j][pos]==i ? 1n:0n]) // coefficient is 0 or 1
+    }
+    return result
 }
