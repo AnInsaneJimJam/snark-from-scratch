@@ -35,6 +35,8 @@ Where each gate multiplies the previous result by x:
 - C₅: x⁴ * x = x⁵ = y
 */
 
+import FiniteField from "./finitefield.js";
+
 // Veronica(Verifier) doing the setup
 
 // Taking a small p for just learning purposes
@@ -48,32 +50,34 @@ const G = 7;
 const CIRCUIT = 3;
 
 
+const ff = new FiniteField(P);
+
+
 /**
  * Evaluates the target polynomial T(x) = (x-1)(x-2)...(x-n) at point x
  * This polynomial vanishes at all gate indices (T(i) = 0 for i = 1,2,...,n)
  * @param {number[][]} circuit - Circuit representation from getCircuitDetails
- * @param {number} x - Point at which to evaluate the target polynomial
- * @returns {number} The value of T(x)
+ * @param {number|bigint} x - Point at which to evaluate the target polynomial
+ * @returns {bigint} The value of T(x)
  */
 function evaluateGatesPolynomial(circuit,x){
-    let result = 1;
+    let result = 1n;
     for(let i =1; i<circuit.length + 1; i++){
-        result = result*(x-i)
+        result = ff.mul(result, ff.sub(x, i));
     }
     return result
-    
 }
 
 /**
  * Evaluates a polynomial at a given point x
- * @param {number[]} poly - Coefficient array where poly[i] is coefficient of x^i 
- * @param {number} x - Point at which to evaluate the polynomial
- * @returns {number} The value of the polynomial at x
+ * @param {number[]|bigint[]} poly - Coefficient array where poly[i] is coefficient of x^i 
+ * @param {number|bigint} x - Point at which to evaluate the polynomial
+ * @returns {bigint} The value of the polynomial at x
  */
 function evaluatePolynomial(poly, x){
-    let result = 0;
+    let result = 0n;
     for(let i = 0; i < poly.length; i++){
-        result += poly[i] * Math.pow(x, i);
+        result = ff.add(result, ff.mul(poly[i], ff.pow(x, i)));
     }
     return result;
 }
@@ -81,24 +85,24 @@ function evaluatePolynomial(poly, x){
 /**
  * Performs Lagrange interpolation to evaluate a polynomial at point x
  * Given points, constructs the unique polynomial passing through them and evaluates it
- * @param {number[][]} arrPoints - Array of [x, y] coordinate pairs
- * @param {number} x - Point at which to evaluate the interpolated polynomial
- * @returns {number} The value of the interpolated polynomial at x
+ * @param {number[][]|bigint[][]} arrPoints - Array of [x, y] coordinate pairs
+ * @param {number|bigint} x - Point at which to evaluate the interpolated polynomial
+ * @returns {bigint} The value of the interpolated polynomial at x
  */
 function evaluateUsingLagrange(arrPoints, x){
-    let result = 0;
+    let result = 0n;
     for (let i = 0; i < arrPoints.length; i++){
         const [xi, yi] = arrPoints[i];
-        let numerator = 1;
-        let denominator = 1;
+        let numerator = 1n;
+        let denominator = 1n;
         for(let k = 0; k < arrPoints.length; k++){
             if(k !== i){
                 const [xk, yk] = arrPoints[k];
-                numerator = numerator * (x - xk);
-                denominator = denominator * (xi - xk);
+                numerator = ff.mul(numerator, ff.sub(x, xk));
+                denominator = ff.mul(denominator, ff.sub(xi, xk));
             }
         }
-        result += (yi * numerator) / denominator;
+        result = ff.add(result, ff.div(ff.mul(yi, numerator), denominator));
     }
     return result;
 }
@@ -190,7 +194,7 @@ function expo(base, exponent){
 function getSubPolynomailPoints(circuit,pos,i){
     let result = [];
     for(let j = 0; j < circuit.length ; j++){
-        result.push([circuit[j][0],circuit[j][pos]==i ? 1:0])
+        result.push([circuit[j][0],circuit[j][pos]==i ? 1n:0n]) // coefficient is 0 or 1
     }
     return result
 }
@@ -216,27 +220,27 @@ function getRandInt(min, max){
 
 ////////////////////////////////////////SETUP////////////////////////////////////////////////////
 //Input Value
-let I = 100;
+let I = 100n;
 
 //Calculate Output Value : Done by Philip (Prover)
-let O = I**CIRCUIT
+let O = ff.pow(I, BigInt(CIRCUIT));
 
 
 //Veronica Generates random Values
-const secret = getRandInt(1,P-1);
+const secret = BigInt(getRandInt(1,P-1));
 
 //Knowledge of exponent values
-const alphaL = getRandInt(1,P-1);
-const alphaR = getRandInt(1,P-1);
-const alphaO = getRandInt(1,P-1);
-const betaL = getRandInt(1,P-1);
-const betaR = getRandInt(1,P-1);
-const betaO = getRandInt(1,P-1);
+const alphaL = BigInt(getRandInt(1,P-1));
+const alphaR = BigInt(getRandInt(1,P-1));
+const alphaO = BigInt(getRandInt(1,P-1));
+const betaL = BigInt(getRandInt(1,P-1));
+const betaR = BigInt(getRandInt(1,P-1));
+const betaO = BigInt(getRandInt(1,P-1));
 
 const circuit = getCircuitDetails(CIRCUIT)
 
 //Calculate g^G(s)
-const encryptedG = expo(G,evaluateGatesPolynomial(circuit,secret));
+const encryptedG = ff.pow(G, evaluateGatesPolynomial(circuit,secret));
 
 //Calculate L_i(s),R_i(s)_O_i(s)
 const Ls = evaluateSubPolynomials(circuit,1,secret);
@@ -245,13 +249,13 @@ const Os = evaluateSubPolynomials(circuit,3,secret);
 
 // Have to handle negative values
 const encryptedLs = Ls.map((elem) => {
-  return expo(G,elem);
+  return ff.pow(G,elem);
 });
 
 const encryptedRs = Rs.map((elem) => {
-  return expo(G,elem);
+  return ff.pow(G,elem);
 });
 
 const encryptedOs = Os.map((elem) => {
-  return expo(G,elem);
+  return ff.pow(G,elem);
 });
