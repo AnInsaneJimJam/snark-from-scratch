@@ -35,7 +35,7 @@ Where each gate multiplies the previous result by x:
 - C₅: x⁴ * x = x⁵ = y
 */
 
-import FiniteField from "./finitefield.js";
+import FiniteField from "../utils/finitefield.js";
 
 // Veronica(Verifier) doing the setup
 
@@ -247,7 +247,6 @@ const Ls = evaluateSubPolynomials(circuit,1,secret);
 const Rs = evaluateSubPolynomials(circuit,2,secret);
 const Os = evaluateSubPolynomials(circuit,3,secret);
 
-// Have to handle negative values
 const encryptedLs = Ls.map((elem) => {
   return ff.pow(G,elem);
 });
@@ -259,3 +258,16 @@ const encryptedRs = Rs.map((elem) => {
 const encryptedOs = Os.map((elem) => {
   return ff.pow(G,elem);
 });
+
+const encryptedAlphaLs = encryptedLs.map((elem) => {
+    return ff.pow(elem,alphaL);
+});
+
+const encryptedAlphaRs = encryptedRs.map((elem) => {
+    return ff.pow(elem,alphaR);
+});
+
+const encryptedAlphaOs = encryptedOs.map((elem) => {
+    return ff.pow(elem,alphaO);
+});
+
