@@ -15,3 +15,11 @@ const encryptedRs = polynomialsRi.map(poly => ff.pow(G,poly.evaluate(secret)));
 const encryptedOs = polynomialsOi.map(poly => ff.pow(G,poly.evaluate(secret)));
 
 const encryptedG = ff.pow(G,polynomialG.evaluate(secret));
+
+//Knowledge of exponent values
+const alphaL = BigInt(getRandInt(1,P-1));
+const alphaR = BigInt(getRandInt(1,P-1));
+const alphaO = BigInt(getRandInt(1,P-1));
+const betaL = BigInt(getRandInt(1,P-1));
+const betaR = BigInt(getRandInt(1,P-1));
+const betaO = BigInt(getRandInt(1,P-1));
