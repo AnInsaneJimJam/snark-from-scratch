@@ -84,5 +84,5 @@ const encryptedAlphaRmid = getInterSubPoly(encryptedAlphaLmids)
 const encryptedAlphaOmid = getInterSubPoly(encryptedAlphaLmids)
 const encryptedInterCombined = getInterSubPoly(encryptedSubPolynomialSum)
 
-
++
 

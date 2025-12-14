@@ -7,8 +7,11 @@ const circuit = getCircuitDetails(CIRCUIT);
 const ff = new FiniteField(P);
 
 function getGPolynomial(){
-    const points = circuit.map(elem => [BigInt( elem[0]),0n])
-    return Polynomial.lagrange(points,ff)
+    let result = new Polynomial([1n],ff);
+    for(let i = 1; i < circuit.length+1;i++){
+        result = result.mul(new Polynomial([ff.subInv(BigInt(i)),1n],ff));
+    }
+    return result
 }
 
 function getSubPolynomials(pos){
@@ -24,3 +27,10 @@ export const polynomialG = getGPolynomial();
 export const polynomialsLi = getSubPolynomials(1);
 export const polynomialsRi = getSubPolynomials(2);
 export const polynomialsOi = getSubPolynomials(3);
+
+console.log(circuit);
+console.log(ff)
+console.log("Gpolynomial",polynomialG);
+console.log("Li",polynomialsLi);
+console.log("Ri",polynomialsRi);
+console.log("Oi",polynomialsOi);
