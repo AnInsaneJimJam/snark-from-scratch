@@ -1,7 +1,8 @@
 import { P, G } from "./parameters.js";
-import { getRandInt } from "./misc.js";
-import { FiniteField } from "../utils/finitefield.js";
+import {getRandInt} from "../utils/misc.js";
+import FiniteField from "../utils/finitefield.js";
 import { polynomialsLi, polynomialsRi, polynomialsOi, polynomialG } from "./commonSetup.js";
+import Polynomial from "../utils/polynomial.js";
 
 // Finite field
 const ff = new FiniteField(P);
@@ -49,3 +50,8 @@ function getPowersOfG(){
 
 const PowersOfG = getPowersOfG()
 
+console.log(secret)
+console.log(encryptedG)
+console,log(encryptedLs)
+console,log(encryptedRs)
+console,log(encryptedOs)
