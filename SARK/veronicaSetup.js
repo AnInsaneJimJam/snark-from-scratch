@@ -26,16 +26,16 @@ const betaO = BigInt(getRandInt(1, P - 1));
 
 // Compute values needed for knowledge of exponent check
 const encryptedAlphaLs = encryptedLs.map(encPoly => ff.pow(encPoly, alphaL));
-const encryptedAlphaRs = encryptedLs.map(encPoly => ff.pow(encPoly, alphaR));
-const encryptedAlphaOs = encryptedLs.map(encPoly => ff.pow(encPoly, alphaO));
+const encryptedAlphaRs = encryptedRs.map(encPoly => ff.pow(encPoly, alphaR));
+const encryptedAlphaOs = encryptedOs.map(encPoly => ff.pow(encPoly, alphaO));
 
 // Compute beta values
 const encryptedBetaLs = encryptedLs.map(encPoly => ff.pow(encPoly, betaL));
-const encryptedBetaRs = encryptedLs.map(encPoly => ff.pow(encPoly, betaR));
-const encryptedBetaOs = encryptedLs.map(encPoly => ff.pow(encPoly, betaO));
+const encryptedBetaRs = encryptedRs.map(encPoly => ff.pow(encPoly, betaR));
+const encryptedBetaOs = encryptedOs.map(encPoly => ff.pow(encPoly, betaO));
 
 // Computa beta comination
-const encryptedSubPolynomialSum = ff.mul(ff.mul(encryptedBetaLs,encryptedAlphaRs),encryptedAlphaOs);
+const encryptedSubPolynomialSum = ff.mul(ff.mul(encryptedBetaLs,encryptedBetaRs),encryptedBetaOs);
 
 // TODO: get degree of H(x)
 const degH = 5;
@@ -48,3 +48,4 @@ function getPowersOfG(){
 }
 
 const PowersOfG = getPowersOfG()
+
