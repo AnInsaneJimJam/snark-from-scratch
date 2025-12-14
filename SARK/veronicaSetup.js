@@ -11,11 +11,11 @@ const ff = new FiniteField(P);
 const secret = BigInt(getRandInt(1, P - 1));
 
 // Compute encrypted polynomials
-const encryptedLs = polynomialsLi.map(poly => ff.pow(G, poly.evaluate(secret)));
-const encryptedRs = polynomialsRi.map(poly => ff.pow(G, poly.evaluate(secret)));
-const encryptedOs = polynomialsOi.map(poly => ff.pow(G, poly.evaluate(secret)));
+const encryptedLs = polynomialsLi.map(poly => ff.pow(G, poly.eval(secret)));
+const encryptedRs = polynomialsRi.map(poly => ff.pow(G, poly.eval(secret)));
+const encryptedOs = polynomialsOi.map(poly => ff.pow(G, poly.eval(secret)));
 
-const encryptedG = ff.pow(G, polynomialG.evaluate(secret));
+const encryptedG = ff.pow(G, polynomialG.eval(secret));
 
 //Knowledge of exponent values
 const alphaL = BigInt(getRandInt(1, P - 1));
@@ -35,23 +35,41 @@ const encryptedBetaLs = encryptedLs.map(encPoly => ff.pow(encPoly, betaL));
 const encryptedBetaRs = encryptedRs.map(encPoly => ff.pow(encPoly, betaR));
 const encryptedBetaOs = encryptedOs.map(encPoly => ff.pow(encPoly, betaO));
 
-// Computa beta comination
-const encryptedSubPolynomialSum = ff.mul(ff.mul(encryptedBetaLs,encryptedBetaRs),encryptedBetaOs);
+// Compute beta combination
+function getEncryptedSubPolynomialSum(){
+    let result = [];
+    for(let i =0n; i<encryptedBetaLs.length;i++){
+        result.push(ff.mul(ff.mul(encryptedBetaLs[i],encryptedBetaRs[i]),encryptedBetaOs[i]))
+    }
+    return result
+}
+
+const encryptedSubPolynomialSum = getEncryptedSubPolynomialSum()
 
 // TODO: get degree of H(x)
-const degH = 5;
+const degH = 5n;
 
 function getPowersOfG(){
     let PowersOfG = [];
     for(let i =1n; i <= degH; i++){
         PowersOfG.push(ff.pow(G, secret**i))
     }
+    return PowersOfG
 }
 
 const PowersOfG = getPowersOfG()
 
+console.log(ff)
 console.log(secret)
 console.log(encryptedG)
-console,log(encryptedLs)
-console,log(encryptedRs)
-console,log(encryptedOs)
+console.log(encryptedLs)
+console.log(encryptedRs)
+console.log(encryptedOs)
+console.log(encryptedAlphaLs)
+console.log(encryptedAlphaRs)
+console.log(encryptedAlphaOs)
+console.log(encryptedBetaLs)
+console.log(encryptedBetaRs)
+console.log(encryptedBetaOs)
+console.log(encryptedSubPolynomialSum)
+console.log(PowersOfG)

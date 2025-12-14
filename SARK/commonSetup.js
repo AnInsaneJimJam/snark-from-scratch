@@ -27,10 +27,3 @@ export const polynomialG = getGPolynomial();
 export const polynomialsLi = getSubPolynomials(1);
 export const polynomialsRi = getSubPolynomials(2);
 export const polynomialsOi = getSubPolynomials(3);
-
-console.log(circuit);
-console.log(ff)
-console.log("Gpolynomial",polynomialG);
-console.log("Li",polynomialsLi);
-console.log("Ri",polynomialsRi);
-console.log("Oi",polynomialsOi);
