@@ -36,3 +36,15 @@ const encryptedBetaOs = encryptedLs.map(encPoly => ff.pow(encPoly, betaO));
 
 // Computa beta comination
 const encryptedSubPolynomialSum = ff.mul(ff.mul(encryptedBetaLs,encryptedAlphaRs),encryptedAlphaOs);
+
+// TODO: get degree of H(x)
+const degH = 5;
+
+function getPowersOfG(){
+    let PowersOfG = [];
+    for(let i =1n; i <= degH; i++){
+        PowersOfG.push(ff.pow(G, secret**i))
+    }
+}
+
+const PowersOfG = getPowersOfG()
