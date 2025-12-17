@@ -1,8 +1,7 @@
 import { P, G } from "./parameters.js";
-import {getRandInt} from "../utils/misc.js";
+import { getRandInt } from "../utils/misc.js";
 import FiniteField from "../utils/finitefield.js";
 import { polynomialsLi, polynomialsRi, polynomialsOi, polynomialG } from "./commonSetup.js";
-import Polynomial from "../utils/polynomial.js";
 import fs from "fs";
 import { bigIntStringify } from "../utils/serialization.js";
 
@@ -49,11 +48,12 @@ function getEncryptedSubPolynomialSum() {
 const encryptedSubPolynomialSum = getEncryptedSubPolynomialSum()
 
 // Degree of H(x) = 2*(n-1) - n
-const degH = BigInt(encryptedLs.length) - 1n;
+const degH = BigInt(encryptedLs.length) - 2n;
+
 
 function getPowersOfG() {
     let PowersOfG = [];
-    for (let i = 1n; i <= degH; i++) {
+    for (let i = 0n; i <= degH; i++) {
         PowersOfG.push(ff.pow(G, secret ** i))
     }
     return PowersOfG
@@ -72,7 +72,20 @@ const provingKey = {
     PowersOfG
 };
 
+const secretkey = {
+    secret,
+    alphaL,
+    alphaR,
+    alphaO,
+    betaL,
+    betaR,
+    betaO
+};
+
 console.log("Saving proving key to SARK/proving_key.json...");
 fs.writeFileSync("proving_key.json", bigIntStringify(provingKey));
 console.log("Done.");
 
+console.log("Saving secret key to SARK/secret_key.json...");
+fs.writeFileSync("secret_key.json", bigIntStringify(secretkey));
+console.log("Done.");
