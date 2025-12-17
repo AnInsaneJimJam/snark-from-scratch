@@ -3,6 +3,8 @@ import {getRandInt} from "../utils/misc.js";
 import FiniteField from "../utils/finitefield.js";
 import { polynomialsLi, polynomialsRi, polynomialsOi, polynomialG } from "./commonSetup.js";
 import Polynomial from "../utils/polynomial.js";
+import fs from "fs";
+import { bigIntStringify } from "../utils/serialization.js";
 
 // Finite field
 const ff = new FiniteField(P);
@@ -36,40 +38,41 @@ const encryptedBetaRs = encryptedRs.map(encPoly => ff.pow(encPoly, betaR));
 const encryptedBetaOs = encryptedOs.map(encPoly => ff.pow(encPoly, betaO));
 
 // Compute beta combination
-function getEncryptedSubPolynomialSum(){
+function getEncryptedSubPolynomialSum() {
     let result = [];
-    for(let i =0n; i<encryptedBetaLs.length;i++){
-        result.push(ff.mul(ff.mul(encryptedBetaLs[i],encryptedBetaRs[i]),encryptedBetaOs[i]))
+    for (let i = 0n; i < encryptedBetaLs.length; i++) {
+        result.push(ff.mul(ff.mul(encryptedBetaLs[i], encryptedBetaRs[i]), encryptedBetaOs[i]))
     }
     return result
 }
 
 const encryptedSubPolynomialSum = getEncryptedSubPolynomialSum()
 
-// TODO: get degree of H(x)
-const degH = 5n;
+// Degree of H(x) = 2*(n-1) - n
+const degH = BigInt(encryptedLs.length) - 1n;
 
-function getPowersOfG(){
+function getPowersOfG() {
     let PowersOfG = [];
-    for(let i =1n; i <= degH; i++){
-        PowersOfG.push(ff.pow(G, secret**i))
+    for (let i = 1n; i <= degH; i++) {
+        PowersOfG.push(ff.pow(G, secret ** i))
     }
     return PowersOfG
 }
 
 const PowersOfG = getPowersOfG()
 
-console.log(ff)
-console.log(secret)
-console.log(encryptedG)
-console.log(encryptedLs)
-console.log(encryptedRs)
-console.log(encryptedOs)
-console.log(encryptedAlphaLs)
-console.log(encryptedAlphaRs)
-console.log(encryptedAlphaOs)
-console.log(encryptedBetaLs)
-console.log(encryptedBetaRs)
-console.log(encryptedBetaOs)
-console.log(encryptedSubPolynomialSum)
-console.log(PowersOfG)
+const provingKey = {
+    encryptedLs,
+    encryptedRs,
+    encryptedOs,
+    encryptedAlphaLs,
+    encryptedAlphaRs,
+    encryptedAlphaOs,
+    encryptedSubPolynomialSum,
+    PowersOfG
+};
+
+console.log("Saving proving key to SARK/proving_key.json...");
+fs.writeFileSync("proving_key.json", bigIntStringify(provingKey));
+console.log("Done.");
+
