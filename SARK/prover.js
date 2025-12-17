@@ -24,8 +24,6 @@ const {
 
 const ff = new FiniteField(P)
 
-
-
 function evalcircuit(input) {
     const circuit = getCircuitDetails(BigInt(CIRCUIT));
     const wires = { 1: input };
