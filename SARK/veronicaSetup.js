@@ -69,7 +69,7 @@ const provingKey = {
     encryptedAlphaRs,
     encryptedAlphaOs,
     encryptedSubPolynomialSum,
-    PowersOfG
+    PowersOfG,
 };
 
 const secretkey = {
@@ -79,7 +79,8 @@ const secretkey = {
     alphaO,
     betaL,
     betaR,
-    betaO
+    betaO,
+    encryptedG
 };
 
 console.log("Saving proving key to SARK/proving_key.json...");

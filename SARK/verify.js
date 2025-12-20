@@ -1,4 +1,4 @@
-import { I, P } from "./parameters.js";
+import { G, I, P } from "./parameters.js";
 import fs from "fs";
 import { bigIntParse} from "../utils/serialization.js";
 import { assert } from "console";
@@ -34,7 +34,8 @@ const {
     alphaO,
     betaL,
     betaR,
-    betaO
+    betaO,
+    encryptedG
 } = secretKey;
 
 const {
@@ -79,5 +80,9 @@ console.assert(encryptedAlphaOmid == ff.pow(encryptedOmid, alphaO,"alphaO test f
 
 //Knowledge of Exponent-Same Combination
 console.assert(encryptedInterCombined == ff.mul(ff.mul(encryptedBetaLmid,encryptedBetaRmid),encryptedBetaOmid),"encryptedSumIO test failed")
+
+// Pairing Check
+// ep(encryptedL,encryptedR) == ep(G,encryptedO)ep(encryptedH,encryptedG)
+
 
 
